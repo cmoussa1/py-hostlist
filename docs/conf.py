@@ -42,7 +42,6 @@ needs_sphinx = '1.3'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
 ]
 
