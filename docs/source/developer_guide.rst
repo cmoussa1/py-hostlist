@@ -46,4 +46,4 @@ Here is a high level view of py-hostlist's directory structure:
 Code Structure
 --------------
 
-For an overview of the various Python modules in py-hostlist, please see the Method Reference section.
+For an overview of the various Python modules in py-hostlist, please see the :doc:`method_reference` section.
