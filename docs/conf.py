@@ -144,7 +144,7 @@ latex_documents = [
 man_pages = [
     (master_doc, 'py-hostlist', u'py-hostlist Documentation',
      [author], 1),
-    ('manpage', 'manpage', u'py-hostlist', [author], 1)
+    ('source/manpage', 'manpage', u'hostlist', [author], 1)
 ]
 
 
