@@ -7,13 +7,12 @@ import re
 
 def append_hostname(machine_name, num_list):
     """
-    Helper method to append the hostname to node numbers.
+    Append the hostname to node numbers.
 
     :param machine_name: The name of the cluster.
     :param num_list: The list of nodes to be appended to the cluster name.
     :return: A hostlist string with the hostname and node numbers.
     """
-
     hostlist = []
     for elem in num_list:
         hostlist.append(machine_name + str(elem))
@@ -23,43 +22,28 @@ def append_hostname(machine_name, num_list):
 
 def sort_nodes(nodelist):
     """
-    sort_nodes is a helper method that sorts the nodes in ascending order.
+    Sort the nodes in a nodelist in ascending order.
 
     :param nodelist: The hostlist string.
     :return: The hostlist string in ascending order.
     """
+    if isinstance(nodelist, str):
+        # remove brackets and split by commas
+        nodelist = nodelist.replace("[", "").replace("]", "").split(',')
 
-    list_of_nodes = nodelist
-    result_hostlist = []
+    def extract_key(node):
+        nodelist_match = r"([a-zA-Z]+)(\d+)(.*)"
+        match = re.search(nodelist_match, node)
+        prefix = match.group(1)
+        number = int(match.group(2))
+        suffix = match.group(3)
+        return (prefix, number, suffix)
 
-    if type(list_of_nodes) == str:
-        left_br = list_of_nodes.replace("[", "")
-        right_br = left_br.replace("]", "")
-        nodelist = right_br.split(',')
+    # sort nodes based on extracted keys (prefix, numeric part, suffix)
+    sorted_nodes = sorted(nodelist, key=extract_key)
 
-    count = 0
-    num_list = []
-    for node in nodelist:
-        iter_node = nodelist[count]
-        nodelist_match = r"([a-z]+)(\d+)(.*)"
-        machine_name = re.search(nodelist_match, iter_node)
-        num_list.append(int(machine_name.group(2)))
-        count = count + 1
-    num_list.sort()
-
-    # append hostname to the node numbers
-    hostlist_no_suffix = []
-    for elem in num_list:
-        hostlist_no_suffix.append(machine_name.group(1) + str(elem))
-
-    # append suffix to hostlist if there is one
-    final_hostlist = []
-    for elem in hostlist_no_suffix:
-        final_hostlist.append(elem + machine_name.group(3))
-
-    result_hostlist.append('%s' % ','.join(map(str, final_hostlist)))
-
-    return '%s' % ','.join(map(str, final_hostlist))
+    # join the sorted nodes back into a string
+    return ','.join(sorted_nodes)
 
 
 # ========== END OF HELPER METHODS =========== #
