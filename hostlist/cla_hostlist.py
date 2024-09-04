@@ -15,7 +15,7 @@ def msg(name=None):
     Description: cla_hostlist processes slurm-style hostlist strings and
     can return those strings in manipulated fashion.
 
-    Usage: python cla_hostlist.py [OPTION]... [HOSTLIST]...
+    Usage: hostlist [OPTION]... [HOSTLIST]...
 
     -h, --help                   Display this message.
     -q, --quiet                  Quiet output (exit non-zero if empty hostlist)
