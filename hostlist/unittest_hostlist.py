@@ -20,6 +20,12 @@ class TestHostlistMethods(unittest.TestCase):
         test = hl.expand('quartz[4-8]')
         self.assertEqual(test, expected)
 
+    # expand() with the prompt in issue#32
+    def test_expand_leading_zeros(self):
+        expected = 's02p017,s02p029,s02p030'
+        test = hl.expand('s02p[017,029-030]')
+        self.assertEqual(test, expected)
+
     # expand() will also return correctly with
     # multiple sets of ranges
     def test_expand_multi_range(self):

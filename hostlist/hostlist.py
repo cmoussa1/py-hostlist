@@ -73,69 +73,39 @@ def expand(nodelist):
     :return: The expanded hostlist string.
     """
     node_list = nodelist.split(", ")
-    # print node_list
-
     result_hostlist = []
+
     for node in node_list:
         nodelist_match = r"(\w+-?)\[((,?[0-9]+-?,?-?){0,})\](.*)?"
-        if re.search(nodelist_match, node):
-            match = re.search(nodelist_match, node)
+        match = re.search(nodelist_match, node)
 
-            # holds the ranges of nodes as a string
-            # now we can manipulate the string and cast it to a list of numbers
-            oldstr = str(match.group(2))
-            left_br = oldstr.replace("[", "")
-            right_br = left_br.replace("]", "")
-            num_list = right_br.split(',')
+        if match:
+            prefix = match.group(1)  # hostname prefix
+            ranges_str = match.group(2)  # the range of numbers within brackets
+            suffix = match.group(4) or ""  # optional suffix
 
-            # if the node numbers contain leading zeros, store them to be
-            # prepended in the final list
-            final_list = []
-            lead_zeros = 0
-            lead_zeros_str = ''
-            for elem in num_list:
-                # if it is a range of numbers, break it by the hyphen and
-                # create a list
-                #
-                # will then be merged with final list
-                if '-' in elem:
-                    tmp_list = elem.replace("-", ",").split(",")
-
-                    for digit in tmp_list[0]:
-                        if digit == '0':
-                            lead_zeros = lead_zeros + 1
-                            lead_zeros_str = lead_zeros_str + '0'
-                        else:
-                            break
-
-                    rng_list = range(int(tmp_list[0]), int(tmp_list[1]) + 1)
-                    final_list.extend(rng_list)
-                else:
-                    final_list.append(int(elem))
-
-            # put final list in ascending order and append cluster name to
-            # each node number
-            final_list.sort()
-
-            # prepend leading zeros to numbers required
-            hostlist_tmp = []
-            for elem in final_list:
-                if ((lead_zeros > 0) and (len(str(elem)) <= len(lead_zeros_str))):
-                    hostlist_tmp.append(str(elem).zfill(lead_zeros + 1))
-                else:
-                    hostlist_tmp.append(str(elem))
-
-            # append hostname to the node numbers
-            hostlist_no_suffix = []
-            for elem in hostlist_tmp:
-                hostlist_no_suffix.append(match.group(1) + elem)
-
-            # append suffix to hostlist if there is one
             final_hostlist = []
-            for elem in hostlist_no_suffix:
-                final_hostlist.append(elem + match.group(4))
+            ranges = ranges_str.split(',')
 
-            result_hostlist.append('%s' % ','.join(map(str, final_hostlist)))
+            for rng in ranges:
+                if '-' in rng:
+                    start, end = rng.split('-')
+                    # handle leading zeros
+                    width = len(start)
+                    start, end = int(start), int(end)
+                    for i in range(start, end + 1):
+                        final_hostlist.append(f"{prefix}{str(i).zfill(width)}{suffix}")
+                else:
+                    final_hostlist.append(f"{prefix}{rng.zfill(len(rng))}{suffix}")
+
+            # append sorted hostnames
+            result_hostlist.extend(final_hostlist)
+
+    # sort the entire hostlist numerically based on the numeric part
+    def numeric_key(hostname):
+        return int(re.search(r'(\d+)', hostname).group(1))
+
+    result_hostlist.sort(key=numeric_key)
 
     return ','.join(result_hostlist)
 
