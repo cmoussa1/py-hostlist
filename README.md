@@ -11,7 +11,7 @@
 
 py-hostlist processes slurm-style hostlist strings and can return those strings in manipulated fashion.
 
-See the [Feature Overview](https://py-hostlist.readthedocs.io/en/latest/features.html) for examples and highlights.
+See the [Feature Overview](https://py-hostlist.readthedocs.io/en/latest/source/features.html) for examples and highlights.
 
 ## Documentation
 
