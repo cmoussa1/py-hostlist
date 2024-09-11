@@ -58,43 +58,50 @@ def main():
     parser.add_argument("-x", "--exclude", dest="exclude", nargs="*")
     parser.add_argument("-q", "--quiet", dest="quiet")
     parser.add_argument("-f", "--filter", dest="filter")
+    parser.add_argument("-j", "--json", action="store_true")
 
     args = parser.parse_args()
 
     if args.delimiter:
-        print(hl.delimiter(args.delimiter[1], args.delimiter[0]))
+        result = hl.delimiter(args.delimiter[1], args.delimiter[0])
     if args.size_hostlist:
-        print(hl.size_hostlist(args.size_hostlist[1], int(args.size_hostlist[0])))
+        result = hl.size_hostlist(args.size_hostlist[1], int(args.size_hostlist[0]))
     if args.expand:
-        print(hl.expand(args.expand))
+        result = hl.expand(args.expand)
     if args.compress_range:
-        print(hl.compress_range(args.compress_range))
+        result = hl.compress_range(args.compress_range)
     if args.compress:
-        print(hl.compress(args.compress))
+        result = hl.compress(args.compress)
     if args.diff:
-        print(hl.diff(*args.diff))
+        result = hl.diff(*args.diff)
     if args.intersection:
-        print(hl.intersect(*args.intersection))
+        result = hl.intersect(*args.intersection)
     if args.union:
-        print(hl.union_nodes(*args.union))
+        result = hl.union_nodes(*args.union)
     if args.nth:
-        print(hl.nth(args.nth[1], args.nth[0]))
+        result = hl.nth(args.nth[1], args.nth[0])
     if args.remove_node:
-        print(hl.remove_node(args.remove_node[1], args.remove_node[0]))
+        result = hl.remove_node(args.remove_node[1], args.remove_node[0])
     if args.sort:
-        print(hl.sort_nodes(args.sort))
+        result = hl.sort_nodes(args.sort)
     if args.count:
-        print(hl.count(args.count))
+        result = hl.count(args.count)
     if args.find:
-        print(hl.find(args.find[1], args.find[0]))
+        result = hl.find(args.find[1], args.find[0])
     if args.xor:
-        print(hl.xor(*args.xor))
+        result = hl.xor(*args.xor)
     if args.exclude:
-        print(hl.exclude(*args.exclude))
+        result = hl.exclude(*args.exclude)
     if args.quiet:
         hl.quiet(args.quiet)
     if args.filter:
-        print(hl.filter_python(args.filter))
+        result = hl.filter_python(args.filter)
+
+    if args.json:
+        # create JSON output for the result of any of the above functions
+        print({"hostlist" : result})
+    else:
+        print(result)
 
 
 if __name__ == "__main__":
